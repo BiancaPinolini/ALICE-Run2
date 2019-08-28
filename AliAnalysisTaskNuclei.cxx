@@ -190,8 +190,8 @@ void AliAnalysisTaskNuclei::UserCreateOutputObjects()
   heta[0] = new TH1F("heta_0","#eta (before track cuts);#eta",200,-1,1);
   hisPropagatedToDca[0] = new TH1F("hisPropagatedToDca_0","kPropagatedToDca (before track cuts)",2,0,2);
 
-	hnCrossedRowsTPC[0] = new TH1F("hnCrossedRowsTPC_0","nCrossedRowsTPC (before track cuts)",100,0,200);
-	hRatioCrossedRowsOverFindableClustersTPC[0] = new TH1F("hRatioCrossedRowsOverFindableClustersTPC_0","hRatioCrossedRowsOverFindableClustersTPC (before track cuts)",300,0,500);
+	hnCrossedRowsTPC[0] = new TH1F("hnCrossedRowsTPC_0","nCrossedRowsTPC (before track cuts); nCrossedRowsTPC",100,0,200);
+	hRatioCrossedRowsOverFindableClustersTPC[0] = new TH1F("hRatioCrossedRowsOverFindableClustersTPC_0","hRatioCrossedRowsOverFindableClustersTPC (before track cuts); RatioCROverNclsFTPC",100,0,5);
 
   hnTPCclusters[1] = new TH1F("hnTPCclusters_1","Number of TPC clusters (after track cuts)",200,0,200);
   hchi2TPC[1] = new TH1F("hchi2TPC_1","#chi^{2} per TPC cluster (after track cuts)",100,0,6);
@@ -205,8 +205,8 @@ void AliAnalysisTaskNuclei::UserCreateOutputObjects()
   heta[1] = new TH1F("heta_1","#eta (after track cuts);#eta",200,-1,1);
   hisPropagatedToDca[1] = new TH1F("hisPropagatedToDca_1","kPropagatedToDca (after track cuts)",2,0,2);
 
-	hnCrossedRowsTPC[1] = new TH1F("hnCrossedRowsTPC_1","nCrossedRowsTPC (after track cuts)",100,0,200);
-	hRatioCrossedRowsOverFindableClustersTPC[1] = new TH1F("hRatioCrossedRowsOverFindableClustersTPC_1","hRatioCrossedRowsOverFindableClustersTPC (after track cuts)",300,0,500);
+	hnCrossedRowsTPC[1] = new TH1F("hnCrossedRowsTPC_1","nCrossedRowsTPC (after track cuts); nCrossedRowsTPC",100,0,200);
+	hRatioCrossedRowsOverFindableClustersTPC[1] = new TH1F("hRatioCrossedRowsOverFindableClustersTPC_1","hRatioCrossedRowsOverFindableClustersTPC (after track cuts); RatioCROverNclsFTPC",100,0,5);
 
   fptCorr[0] = new TF1("fptCorr_d","[0]-[1]*TMath::Exp(-[2]*x)",0,10);
   fptCorr[0]->FixParameter(0,-3.97081e-03);
@@ -251,32 +251,37 @@ void AliAnalysisTaskNuclei::UserCreateOutputObjects()
     }
   }
 
-  //fNsigmaTPC[1] with only one bin per axis (temporarily)
+//**************************************************************** N SIGMA TPC
+
   Char_t name_fNsigmaTPC[18][200];
   Char_t title_fNsigmaTPC[18][200];
+
   for(Int_t iS=0;iS<18;iS++) {
+
     snprintf(name_fNsigmaTPC[iS],200,"NsigmaTPC_0_%s",nameSpec[iS]);
     snprintf(title_fNsigmaTPC[iS],200,"n#sigma_{TPC} (%s);p_{T} (GeV/c);V0M Multiplicity Percentile;n_{#sigma_{TPC}}^{%s}",nameSpec[iS],nameSpec[iS]);
-    if(iS==2 || iS==2+9 || iS==3 || iS==3+9 || iS==4 || iS==4+9 || iS==5 || iS==5+9) fNsigmaTPC[0][iS] = new TH3F(name_fNsigmaTPC[iS],title_fNsigmaTPC[iS],Nptbins,ptMin,ptMax,Nmultbins,multV0Min,multV0Max,Nsigmabins,sigmaMin,sigmaMax);
-    else fNsigmaTPC[0][iS] = new TH3F(name_fNsigmaTPC[iS],title_fNsigmaTPC[iS],1,ptMin,ptMax,1,multV0Min,multV0Max,1,sigmaMin,sigmaMax);
+
+		fNsigmaTPC[0][iS] = new TH3F(name_fNsigmaTPC[iS],title_fNsigmaTPC[iS],Nptbins,ptMin,ptMax,Nmultbins,multV0Min,multV0Max,Nsigmabins,sigmaMin,sigmaMax);
 
     snprintf(name_fNsigmaTPC[iS],200,"NsigmaTPC_1_%s",nameSpec[iS]);
     snprintf(title_fNsigmaTPC[iS],200,"n#sigma_{TPC} (%s);p_{T} (GeV/c);Number of tracklets;n_{#sigma_{TPC}}^{%s}",nameSpec[iS],nameSpec[iS]);
-    if(iS==2 || iS==2+9 || iS==3 || iS==3+9 || iS==4 || iS==4+9 || iS==5 || iS==5+9) {
-      fNsigmaTPC[1][iS] = new TH3F(name_fNsigmaTPC[iS],title_fNsigmaTPC[iS],1,ptMin,ptMax,1,0,1000,1,sigmaMin,sigmaMax);//Nptbins,ptMin,ptMax,Ntrackletsbins,0,1000,Nsigmabins,sigmaMin,sigmaMax
-      //fNsigmaTPC[1][iS]->GetYaxis()->Set(Ntrackletsbins, trackletsbins);
-    }
-    else fNsigmaTPC[1][iS] = new TH3F(name_fNsigmaTPC[iS],title_fNsigmaTPC[iS],1,ptMin,ptMax,1,0,1000,1,sigmaMin,sigmaMax);
+
+    fNsigmaTPC[1][iS] = new TH3F(name_fNsigmaTPC[iS],title_fNsigmaTPC[iS],Nptbins,ptMin,ptMax,Ntrackletsbins,0,1000,Nsigmabins,sigmaMin,sigmaMax);
   }
+
 
   Char_t name_fNsigmaTPCwTOF[18][200];
   Char_t title_fNsigmaTPCwTOF[18][200];
+
   for(Int_t iS=0;iS<18;iS++) {
+
     snprintf(name_fNsigmaTPCwTOF[iS],200,"NsigmaTPCwTOF_%s",nameSpec[iS]);
     snprintf(title_fNsigmaTPCwTOF[iS],200,"n#sigma_{TPC} (%s) (TOF matching required);p_{T} (GeV/c);n_{#sigma_{TPC}}^{%s}",nameSpec[iS],nameSpec[iS]);
-    if(iS==2 || iS==2+9 || iS==3 || iS==3+9 || iS==4 || iS==4+9 || iS==5 || iS==5+9) fNsigmaTPCwTOF[iS] = new TH2F(name_fNsigmaTPCwTOF[iS],title_fNsigmaTPCwTOF[iS],Nptbins,ptMin,ptMax,Nsigmabins,sigmaMin,sigmaMax);
-    else fNsigmaTPCwTOF[iS] = new TH2F(name_fNsigmaTPCwTOF[iS],title_fNsigmaTPCwTOF[iS],1,ptMin,ptMax,1,sigmaMin,sigmaMax);
+
+		fNsigmaTPCwTOF[iS] = new TH2F(name_fNsigmaTPCwTOF[iS],title_fNsigmaTPCwTOF[iS],Nptbins,ptMin,ptMax,Nsigmabins,sigmaMin,sigmaMax);
   }
+
+
 
   if(1) {
     const Int_t Ndim=4;
@@ -329,8 +334,9 @@ void AliAnalysisTaskNuclei::UserCreateOutputObjects()
       snprintf(name_fDca[iS],200,"fDca_xy_wTOF_0_multMin=%.0f_multMax=%.0f_%s",multMin[iM],multMax[iM],nameSpec[iS]);
       snprintf(title_fDca[iS],200,"%s (wTOF) V0M %.0f-%.0f%%;DCA_{xy} (cm);m^{2}_{TOF} (GeV^{2}/c^{4});p_{T} (GeV/c)",
 	       nameSpec[iS],multMin[iM],multMax[iM]);
-      if(iS==5 || iS==5+9) fDcawTOF_0[iM][iS]=new TH3F(name_fDca[iS],title_fDca[iS],1,-0.5,0.5,1,0,1,50,0,5);//NDCAxybins,-0.5,0.5,100,0,10,50,0,5
-      else fDcawTOF_0[iM][iS]=new TH3F(name_fDca[iS],title_fDca[iS],1,-0.5,0.5,1,ptMin,ptMax,1,0,5);
+      //if(iS==5 || iS==5+9)
+			fDcawTOF_0[iM][iS]=new TH3F(name_fDca[iS],title_fDca[iS],1,-0.5,0.5,1,0,1,50,0,5);//NDCAxybins,-0.5,0.5,100,0,10,50,0,5
+      //else fDcawTOF_0[iM][iS]=new TH3F(name_fDca[iS],title_fDca[iS],1,-0.5,0.5,1,ptMin,ptMax,1,0,5);
     }
   }
   for(Int_t iM=0;iM<14;iM++) {
@@ -338,8 +344,9 @@ void AliAnalysisTaskNuclei::UserCreateOutputObjects()
       snprintf(name_fDca[iS],200,"fDca_xy_wTOF_1_multMin=%.0f_multMax=%.0f_%s",trackletsMin[iM],trackletsMax[iM],nameSpec[iS]);
       snprintf(title_fDca[iS],200,"%s (wTOF) Number of tracklets [%.0f-%.0f[;DCA_{xy} (cm);m^{2}_{TOF} (GeV^{2}/c^{4});p_{T} (GeV/c)",
 	       nameSpec[iS],trackletsMin[iM],trackletsMax[iM]);
-      if(iS==5 || iS==5+9) fDcawTOF_1[iM][iS]=new TH3F(name_fDca[iS],title_fDca[iS],1,-0.5,0.5,1,0,10,1,0,5);//NDCAxybins,-0.5,0.5,100,0,10,50,0,5
-      else fDcawTOF_1[iM][iS]=new TH3F(name_fDca[iS],title_fDca[iS],1,-0.5,0.5,1,ptMin,ptMax,1,0,5);
+		  //  if(iS==5 || iS==5+9)
+			fDcawTOF_1[iM][iS]=new TH3F(name_fDca[iS],title_fDca[iS],1,-0.5,0.5,1,0,10,1,0,5);//NDCAxybins,-0.5,0.5,100,0,10,50,0,5
+      //else fDcawTOF_1[iM][iS]=new TH3F(name_fDca[iS],title_fDca[iS],1,-0.5,0.5,1,ptMin,ptMax,1,0,5);
     }
   }
 
@@ -357,8 +364,7 @@ void AliAnalysisTaskNuclei::UserCreateOutputObjects()
   for(Int_t iS=0;iS<18;iS++) {
     snprintf(name_fNsigmaTOF[iS],200,"NsigmaTOF_%s",nameSpec[iS]);
     snprintf(title_fNsigmaTOF[iS],200,"n#sigma_{TOF} (%s);p_{T} (GeV/c);n_{#sigma_{TOF}}^{%s}",nameSpec[iS],nameSpec[iS]);
-    if(iS==2 || iS==2+9 || iS==3 || iS==3+9 || iS==4 || iS==4+9 || iS==5 || iS==5+9) fNsigmaTOF[iS] = new TH2F(name_fNsigmaTOF[iS],title_fNsigmaTOF[iS],Nptbins,ptMin,ptMax,Nsigmabins,sigmaMin,sigmaMax);
-    else fNsigmaTOF[iS] = new TH2F(name_fNsigmaTOF[iS],title_fNsigmaTOF[iS],1,ptMin,ptMax,1,sigmaMin,sigmaMax);
+    fNsigmaTOF[iS] = new TH2F(name_fNsigmaTOF[iS],title_fNsigmaTOF[iS],Nptbins,ptMin,ptMax,Nsigmabins,sigmaMin,sigmaMax);
   }
 
   Char_t name_fNsigmas[18][200];
@@ -718,11 +724,11 @@ void AliAnalysisTaskNuclei::UserCreateOutputObjects()
   for(Int_t i=0;i<18;i++) fList->Add(fDcaxy[1][i]);
 
 	for(Int_t j=0;j<7;j++) {
-		for(Int_t i=0;i<18;i++) fList->Add(fDcawTOF_0[j][i]);
+		//for(Int_t i=0;i<18;i++) fList->Add(fDcawTOF_0[j][i]);
 	}
 
 	for(Int_t j=0;j<14;j++) {
-		for(Int_t i=0;i<18;i++) fList->Add(fDcawTOF_1[j][i]);
+		//for(Int_t i=0;i<18;i++) fList->Add(fDcawTOF_1[j][i]);
 	}
 
   for(Int_t i=0;i<18;i++) fList->Add(fDcaz[i]);
@@ -986,7 +992,7 @@ void AliAnalysisTaskNuclei::UserExec(Option_t *)
 
     //reconstructed MC particles:
     if(isMC) {
-      this->ForPtCorr(track->Pt(), t_pt, kSpec);
+      //this->ForPtCorr(track->Pt(), t_pt, kSpec);
 
       if(kSpec>-1){
 	if(isPrimary) {
@@ -1017,7 +1023,7 @@ void AliAnalysisTaskNuclei::UserExec(Option_t *)
     this->GetNsigmaTPC(track, nsigmaTPC);
 
     //pT correction applied:
-    this->PtCorr(pt, nsigmaTPC);
+    //this->PtCorr(pt, nsigmaTPC);
 
     for(Int_t iS=0;iS<9;iS++){
       if(charge>0) {
@@ -1158,7 +1164,7 @@ void AliAnalysisTaskNuclei::UserExec(Option_t *)
 }//end loop on the events
 //_____________________________________________________________________________
 void AliAnalysisTaskNuclei::Terminate(Option_t *) {
-  printf("Terminate()\n");
+		printf("Terminate()\n");
 }
 //_____________________________________________________________________________
 void AliAnalysisTaskNuclei::EventSelectionMonitor() {
@@ -1413,12 +1419,14 @@ void AliAnalysisTaskNuclei::GetExpTOFtime(AliVTrack *track, Double_t p, Double_t
 
   track->GetIntegratedTimes(exptimes);
   //Integrated times of nuclei:
+  /*
   Double_t m_proton = AliPID::ParticleMass(4);
   for(Int_t iN=5;iN<9;iN++) {
     Double_t massOverZ = AliPID::ParticleMassZ(iN);
     if(p>1e-18) exptimes[iN] = exptimes[4]*exptimes[4]*(massOverZ*massOverZ/p/p+1)/(m_proton*m_proton/p/p+1);
     exptimes[iN] = TMath::Sqrt(exptimes[iN]);
-  }
+    }
+  */
 
   return;
 }
