@@ -1,11 +1,11 @@
-const Char_t *AliPhysicsVersion = "vAN-20190806-1";
+const Char_t *AliPhysicsVersion = "vAN-20190827-1";
 
 /***************************************************************************/
 /***************************************************************************/
 /***************************************************************************/
 
-void run(TString pluginMode = "test", 
-	 TString dataset = "test", 
+void run(TString pluginMode = "terminate",
+	 TString dataset = "test",
 	 TString runlist = "test")
 {
 
@@ -22,12 +22,12 @@ void run(TString pluginMode = "test",
   //
   TString trainName = "PWGLF";
   //
-  TString analysisTag = "Nuclei"; 
-  analysisTag += "_"; 
-  analysisTag += dataset; 
-  analysisTag += "_"; 
+  TString analysisTag = "Nuclei";
+  analysisTag += "_";
+  analysisTag += dataset;
+  analysisTag += "_";
   analysisTag += runlist;
-  //  
+  //
   AliAnalysisGrid *alienHandler = CreateAlienHandler(pluginMode, dataset, runlist, analysisTag);
   //
   AliAnalysisManager *mgr  = new AliAnalysisManager("manager", "manager");
@@ -47,12 +47,12 @@ void run(TString pluginMode = "test",
   gROOT->LoadMacro("$ALICE_PHYSICS/OADB/COMMON/MULTIPLICITY/macros/AddTaskMultSelection.C");
   gROOT->LoadMacro("AddAnalysisTaskNuclei.C");
   gROOT->LoadMacro("AliAnalysisTaskNuclei.cxx++g");
-  
+
   AddTaskPIDResponse();
   AddTaskPhysicsSelection(kFALSE);//no calib
   AddTaskMultSelection(kFALSE);//no MC
   AddAnalysisTaskNuclei(kFALSE);//no MC
-  
+
   /****************************************/
   /* RUN ANALYSIS                         */
   /****************************************/
@@ -84,7 +84,7 @@ AliAnalysisGrid* CreateAlienHandler(TString pluginmode,
     //
     plugin->SetGridWorkingDir(analysisTag.Data());
     plugin->SetExecutable("Nuclei.sh");
-    plugin->SetAnalysisMacro("Nuclei.C");    
+    plugin->SetAnalysisMacro("Nuclei.C");
     TString exe = analysisTag; exe += ".sh";
     TString mac = analysisTag; mac += ".C";
     // Declare alien output directory. Relative to working directory.
@@ -102,7 +102,7 @@ AliAnalysisGrid* CreateAlienHandler(TString pluginmode,
     plugin->SetOneStageMerging(kFALSE);
     plugin->SetMaxMergeStages(1);
     //
-    plugin->SetSplitMaxInputFileNumber(100);    
+    plugin->SetSplitMaxInputFileNumber(100);
     plugin->SetNtestFiles(1);
 
     return plugin;
@@ -121,6 +121,12 @@ void ConfigDataset(AliAnalysisAlien *plugin,
     plugin->SetDataPattern("/pass1/*/AliESDs.root");
   }
 
+	if (dataset.EqualTo("LHC18q")) {
+		plugin->SetRunPrefix("000");
+		plugin->SetGridDataDir("/alice/data/2018/LHC18q");
+		plugin->SetDataPattern("/pass1/*/AliESDs.root");
+	}
+
   // configure runlist
   //
   Int_t *_runlist = NULL;
@@ -129,23 +135,32 @@ void ConfigDataset(AliAnalysisAlien *plugin,
   Int_t runlist_test[] = {
     295585
   };
+
+	Int_t runlist_LHC18q_0[] = {
+		296510, 296244, 296273, 296433, 296377, 296304, 296378, 296191, 296414, 296549
+	};
+
   //
   if (runlist.EqualTo("test")) {
     _runlist = runlist_test;
     _nruns = sizeof(runlist_test)/4;
   }
-      
+
+	if (runlist.EqualTo("LHC18q_0")) {
+		_runlist = runlist_LHC18q_0;
+		_nruns = sizeof(runlist_LHC18q_0)/4;
+	}
+
   // add the runs
   Int_t nruns = 0;
   for(Int_t irun = 0; irun < _nruns; irun++) {
     plugin->AddRunNumber(_runlist[irun]);
     nruns++;
   }
-  printf(">>> ConfigDataset: added %d runs from runlist %s\n", nruns, runlist.Data()); 
-  plugin->SetNrunsPerMaster(1);  
+  printf(">>> ConfigDataset: added %d runs from runlist %s\n", nruns, runlist.Data());
+  plugin->SetNrunsPerMaster(1);
   plugin->SetOutputToRunNo(1);
 
   return;
-  
-}
 
+}
