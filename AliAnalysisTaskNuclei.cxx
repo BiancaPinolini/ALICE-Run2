@@ -387,6 +387,33 @@ void AliAnalysisTaskNuclei::UserCreateOutputObjects()
     hBetaExp[iS] = new TProfile(name_hBetaExp[iS],title_hBetaExp[iS],200,0,10,0.4,1.05,"");
   }
 
+	//***************************************************TH3F WITH NSIGMATPC, PT, M2
+
+	Char_t name[18][200];
+	Char_t title[18][200];
+
+	/*for(Int_t iS=0;iS<18;iS++) {
+		snprintf(name[iS],200,"NsigmaTPC_M2_p_%s",nameSpec[iS]);
+		snprintf(title[iS],200,"n#sigma_{TPC} of %s;m^{2}_{TOF} (GeV^{2}/c^{4});n_{#sigma_{TPC}};p/|z| (GeV/c)",nameSpec[iS]);
+
+		hnSigmaM2[iS] = new TH3F(name[iS],title[iS],500, 0, 10, 500, -50, 50, Nptbins, ptMin, ptMax);
+	}*/
+
+	// anti-triton
+	snprintf(name[15],200,"NsigmaTPC_M2_p_%s",nameSpec[15]);
+	snprintf(title[15],200,"n#sigma_{TPC} of %s;m^{2}_{TOF} (GeV^{2}/c^{4});n_{#sigma_{TPC}};p/|z| (GeV/c)",nameSpec[15]);
+
+	hnSigmaM2[15] = new TH3F(name[15],title[15],500, 0, 10, 500, -50, 50, Nptbins, ptMin, ptMax);
+
+	// anti-helion
+	snprintf(name[16],200,"NsigmaTPC_M2_p_%s",nameSpec[16]);
+	snprintf(title[16],200,"n#sigma_{TPC} of %s;m^{2}_{TOF} (GeV^{2}/c^{4});n_{#sigma_{TPC}};p/|z| (GeV/c)",nameSpec[16]);
+
+	hnSigmaM2[16] = new TH3F(name[16],title[16],500, 0, 10, 500, -50, 50, Nptbins, ptMin, ptMax);
+
+
+	//***************************************************END
+
   fM2tof[0][0] = new TH3F("fM2tof_pos_0","m^{2}_{TOF} (positive charges);p_{T} (GeV/c);V0M Multiplicity Percentile;m^{2}_{TOF} (GeV^{2}/c^{4})",Nptbins,ptMin,ptMax,Nmultbins,multV0Min,multV0Max,500,0,10);
   fM2tof[0][1] = new TH3F("fM2tof_neg_0","m^{2}_{TOF} (negative charges);p_{T} (GeV/c);V0M Multiplicity Percentile;m^{2}_{TOF} (GeV^{2}/c^{4})",Nptbins,ptMin,ptMax,Nmultbins,multV0Min,multV0Max,500,0,10);
 
@@ -427,16 +454,15 @@ void AliAnalysisTaskNuclei::UserCreateOutputObjects()
   for(Int_t iS=0;iS<18;iS++) {
     snprintf(name_fM2vspt[iS],200,"fM2vspt_0_%s",nameSpec[iS]);
     snprintf(title_fM2vspt[iS],200,"m^{2}_{TOF} (3#sigma TPC dE/dx cut on %s);p_{T} (GeV/c);V0M Multiplicity Percentile;m^{2}_{TOF} (GeV^{2}/c^{4})",nameSpec[iS]);
-    if(iS==4 || iS==4+9 || iS==5 || iS==5+9) fM2vspt[0][iS] = new TH3F(name_fM2vspt[iS],title_fM2vspt[iS],1,ptMin,ptMax,1,multV0Min,multV0Max,1,0,10);//Nptbins,ptMin,ptMax,Nmultbins,multV0Min,multV0Max,500,0,10)
-    else fM2vspt[0][iS] = new TH3F(name_fM2vspt[iS],title_fM2vspt[iS],1,ptMin,ptMax,1,multV0Min,multV0Max,1,0,10);
+    //if(iS==4 || iS==4+9 || iS==5 || iS==5+9)
+		fM2vspt[0][iS] = new TH3F(name_fM2vspt[iS],title_fM2vspt[iS],Nptbins,ptMin,ptMax,Nmultbins,multV0Min,multV0Max,500,0,10);
+    //else fM2vspt[0][iS] = new TH3F(name_fM2vspt[iS],title_fM2vspt[iS],1,ptMin,ptMax,1,multV0Min,multV0Max,1,0,10);
 
     snprintf(name_fM2vspt[iS],200,"fM2vspt_1_%s",nameSpec[iS]);
     snprintf(title_fM2vspt[iS],200,"m^{2}_{TOF} (3#sigma TPC dE/dx cut on %s);p_{T} (GeV/c);Number of tracklets;m^{2}_{TOF} (GeV^{2}/c^{4})",nameSpec[iS]);
-    if(iS==4 || iS==4+9 || iS==5 || iS==5+9) {
-      fM2vspt[1][iS] = new TH3F(name_fM2vspt[iS],title_fM2vspt[iS],1,ptMin,ptMax,1,0,1,500,0,10);//Nptbins,ptMin,ptMax,Ntrackletsbins,0,1000,500,0,10
-      //fM2vspt[1][iS]->GetYaxis()->Set(Ntrackletsbins, trackletsbins);
-    }
-    else fM2vspt[1][iS] = new TH3F(name_fM2vspt[iS],title_fM2vspt[iS],1,ptMin,ptMax,1,0,1000,1,0,10);
+    //if(iS==4 || iS==4+9 || iS==5 || iS==5+9)
+      fM2vspt[1][iS] = new TH3F(name_fM2vspt[iS],title_fM2vspt[iS],Nptbins,ptMin,ptMax,Ntrackletsbins,0,1000,500,0,10);
+    //else fM2vspt[1][iS] = new TH3F(name_fM2vspt[iS],title_fM2vspt[iS],1,ptMin,ptMax,1,0,1000,1,0,10);
   }
 
   htemp[0]=new TH1F("htemp0","Ntracklets for identified deuterons with TPC (pt<5)", Ntrackletsbins, trackletsbins);
@@ -716,6 +742,7 @@ void AliAnalysisTaskNuclei::UserCreateOutputObjects()
   for(Int_t i=0;i<18;i++) fList->Add(fSparseNsigmaTPC[i]);
   for(Int_t i=0;i<18;i++) fList->Add(fNsigmaTPC[0][i]);
   for(Int_t i=0;i<18;i++) fList->Add(fNsigmaTPC[1][i]);
+
 	for(Int_t i=0;i<18;i++) fList->Add(fNsigmaTPCwTOF[i]);
 
   for(Int_t i=0;i<18;i++) fList->Add(fSparseDcaxy[i]);
@@ -747,6 +774,16 @@ void AliAnalysisTaskNuclei::UserCreateOutputObjects()
 	}
 
 	for(Int_t i=0;i<18;i++) fList->Add(fNsigmas[i]);
+
+	//***************************************************ADDING THE TH3F TO THE OUTPUT LIST
+
+	//for(Int_t i=0;i<18;i++) fList->Add(hnSigmaM2[i]);
+	// anti-triton and anti-helion
+	fList->Add(hnSigmaM2[15]);
+	fList->Add(hnSigmaM2[16]);
+
+	//***************************************************END
+
 
   fList->Add(htemp[0]);
 
@@ -1027,16 +1064,16 @@ void AliAnalysisTaskNuclei::UserExec(Option_t *)
 
     for(Int_t iS=0;iS<9;iS++){
       if(charge>0) {
-	fNsigmaTPC[0][iS]->Fill(pt,mult,nsigmaTPC[iS]);
-	fNsigmaTPC[1][iS]->Fill(pt,Ntracklets,nsigmaTPC[iS]);
-	Double_t value[4]={nsigmaTPC[iS], pt, mult, Ntracklets};
-	fSparseNsigmaTPC[iS]->Fill(value);
+				fNsigmaTPC[0][iS]->Fill(pt,mult,nsigmaTPC[iS]);
+				fNsigmaTPC[1][iS]->Fill(pt,Ntracklets,nsigmaTPC[iS]);
+				Double_t value[4]={nsigmaTPC[iS], pt, mult, Ntracklets};
+				fSparseNsigmaTPC[iS]->Fill(value);
       }
       else if(charge<0) {
-	fNsigmaTPC[0][iS+9]->Fill(pt,mult,nsigmaTPC[iS]);
-	fNsigmaTPC[1][iS+9]->Fill(pt,Ntracklets,nsigmaTPC[iS]);
-	Double_t value[4]={nsigmaTPC[iS], pt, mult, Ntracklets};
-	fSparseNsigmaTPC[iS+9]->Fill(value);
+				fNsigmaTPC[0][iS+9]->Fill(pt,mult,nsigmaTPC[iS]);
+				fNsigmaTPC[1][iS+9]->Fill(pt,Ntracklets,nsigmaTPC[iS]);
+				Double_t value[4]={nsigmaTPC[iS], pt, mult, Ntracklets};
+				fSparseNsigmaTPC[iS+9]->Fill(value);
       }
     }
 
@@ -1086,6 +1123,21 @@ void AliAnalysisTaskNuclei::UserExec(Option_t *)
 
     //mass determination:
     Double_t m2 = this->GetM2(p, beta);
+
+		//***************************************************FILLING THE TH3F
+		/*for(Int_t iS=0;iS<9;iS++) {
+			if(charge>0) {
+				hnSigmaM2[iS]->Fill(m2, nsigmaTPC[iS], pt);
+			}
+			else if(charge<0) {
+				hnSigmaM2[iS+9]->Fill(m2, nsigmaTPC[iS], pt);
+			}
+		}*/
+
+		hnSigmaM2[15]->Fill(m2, nsigmaTPC[6], pt);
+		hnSigmaM2[16]->Fill(m2, nsigmaTPC[7], pt);
+
+		//***************************************************END
 
     if(charge>0) {
       fM2tof[0][0]->Fill(pt,mult,m2);

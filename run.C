@@ -1,12 +1,12 @@
-const Char_t *AliPhysicsVersion = "vAN-20190827-1";
+const Char_t *AliPhysicsVersion = "vAN-20190902-1";
 
 /***************************************************************************/
 /***************************************************************************/
 /***************************************************************************/
 
 void run(TString pluginMode = "terminate",
-	 TString dataset = "test",
-	 TString runlist = "test")
+	 TString dataset = "LHC18q",
+	 TString runlist = "LHC18q_1")
 {
 
   /* include path for ACLic */
@@ -136,8 +136,16 @@ void ConfigDataset(AliAnalysisAlien *plugin,
     295585
   };
 
+	Int_t runlist_LHC18q[] = {
+		296244, 296273
+	};
+
 	Int_t runlist_LHC18q_0[] = {
-		296510, 296244, 296273, 296433, 296377, 296304, 296378, 296191, 296414, 296549
+		296510, 296433, 296377
+	};
+
+	Int_t runlist_LHC18q_1[] = {
+		296304, 296378, 296191, 296414, 296549
 	};
 
   //
@@ -146,9 +154,14 @@ void ConfigDataset(AliAnalysisAlien *plugin,
     _nruns = sizeof(runlist_test)/4;
   }
 
-	if (runlist.EqualTo("LHC18q_0")) {
-		_runlist = runlist_LHC18q_0;
-		_nruns = sizeof(runlist_LHC18q_0)/4;
+	if (runlist.EqualTo("LHC18q")) {
+		_runlist = runlist_LHC18q;
+		_nruns = sizeof(runlist_LHC18q)/4;
+	}
+
+	if (runlist.EqualTo("LHC18q_1")) {
+		_runlist = runlist_LHC18q_1;
+		_nruns = sizeof(runlist_LHC18q_1)/4;
 	}
 
   // add the runs

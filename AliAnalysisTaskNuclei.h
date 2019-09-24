@@ -119,6 +119,8 @@ class AliAnalysisTaskNuclei : public AliAnalysisTaskSE {
   TH3F *fNsigmaTPC[2][18];                        //! NsigmaTPC vs. pT
   TH2F *fNsigmaTPCwTOF[18];                       //!
 
+  TH3F *hnSigmaM2[18];                             //! NsigmaTPC vs. M2
+
   THnSparseF *fSparseDcaxy[18];                   //!
   TH3F *fDcaxy[2][18];                            //!
   TH3F *fDcawTOF_0[7][18];                        //!
